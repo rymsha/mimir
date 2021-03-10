@@ -8,7 +8,7 @@ import moment from 'moment/min/moment-with-locales'
 import { groupBy } from 'ramda'
 import { StatisticsLogJob } from './StatisticsLogJob'
 import { selectStatisticsLogDataLoaded, selectStatistic } from './selectors'
-
+import { AlertTriangle } from 'react-feather'
 export function StatisticsLog(props) {
   const {
     statisticId
@@ -55,18 +55,19 @@ export function StatisticsLog(props) {
       })(log.result)
       return (
         <React.Fragment>
-          <span className="d-sm-flex justify-content-center text-center small haveList" onClick={() => openEventlog()}>
+          <span className="d-sm-block text-center small haveList" onClick={() => openEventlog()}>
             {log.message} - {moment(log.completionTime ? log.completionTime : log.startTime).locale('nb').format('DD.MM.YYYY HH.mm')}
             <br/>
             {log.user ? log.user.displayName : ''}
             <br/>
+            {log.showWarningIcon && <AlertTriangle size="12" color="#FF4500" className="mr-1" />}
             {Object.entries(groupedDataSourceLogs).map(([status, dataSourceLogGroup]) => renderDataSourceLogGroup(log, status, dataSourceLogGroup))}
           </span>
           {show ? <ModalContent/> : null}
         </React.Fragment>
       )
     }
-    return <span className="d-sm-flex justify-content-center text-center small">Ingen logger</span>
+    return <span className="d-sm-block text-center small">Ingen logger</span>
   }
 
   function renderDataSourceLogGroup(log, status, dataSourceLogGroup) {
