@@ -358,12 +358,15 @@ function getStatisticsJobLogInfo(id: string, count: number = 1): Array<Dashboard
 }
 
 function prepStatisticsJobLogInfo(jobNode: JobInfoNode): DashboardJobInfo {
+  log.info('job node %s', JSON.stringify(jobNode, null, 2))
   const jobResult: Array<RefreshDatasetResult> = forceArray(jobNode.data.refreshDataResult || []) as Array<RefreshDatasetResult>
   jobResult.forEach((datasetResult: RefreshDatasetResult) => {
     datasetResult.status = i18n.localize({
       key: datasetResult.status
     })
   })
+
+  log.info('job result %s', JSON.stringify(jobResult, null, 2))
   return {
     id: jobNode._id,
     startTime: jobNode.data.jobStarted,
@@ -406,7 +409,7 @@ function getEventLogsFromStatisticsJobLog(jobLogId: string): {user: User; datase
       })
       return {
         displayName: datasetContent?.displayName,
-        branch: dataset.branch === 'master' ? 'publisert' : 'ubpulisert',
+        branch: dataset.branch === 'master' ? 'publisert' : 'upublisert',
         eventLogResult: eventLogResult.hits.map((hit) => {
           const node: EventInfo | null = getNode(EVENT_LOG_REPO, EVENT_LOG_BRANCH, `/queries/${dataset.id}/${hit.id}`) as EventInfo
           const resultMessage: string = i18n.localize({

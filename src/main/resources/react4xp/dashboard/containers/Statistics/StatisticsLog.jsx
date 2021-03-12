@@ -50,6 +50,7 @@ export function StatisticsLog(props) {
   function renderLogData() {
     if (statistic && statistic.logData && statistic.logData.length > 0) {
       const log = statistic.logData[0]
+      console.log(log)
       const groupedDataSourceLogs = groupBy((log) => {
         return log.status
       })(log.result)
@@ -60,7 +61,6 @@ export function StatisticsLog(props) {
             <br/>
             {log.user ? log.user.displayName : ''}
             <br/>
-            {log.showWarningIcon && <AlertTriangle size="12" color="#FF4500" className="mr-1" />}
             {Object.entries(groupedDataSourceLogs).map(([status, dataSourceLogGroup]) => renderDataSourceLogGroup(log, status, dataSourceLogGroup))}
           </span>
           {show ? <ModalContent/> : null}
@@ -75,8 +75,12 @@ export function StatisticsLog(props) {
       const relatedTable = statistic.relatedTables.find((r) => r.queryId === datasource.id)
       return relatedTable ? relatedTable.tbmlId : ''
     }).join(', ')
+
+    // TODO: status will never go to error.
+    // possible solution: check against response code status. changes need to be made in statistics.ts in getStatisticsJobLogInfo?
     return (
       <React.Fragment key={`${log.id}_${status}`}>
+        {/* {status === 'ERROR' && <AlertTriangle size="12" color="#FF4500" className="mr-1" />} */}
         {status} - {tbmls} <br/>
       </React.Fragment>
     )
@@ -124,7 +128,6 @@ export function StatisticsLog(props) {
         <Modal.Body>
           <h3>Logg detaljer</h3>
           {renderModalBody()}
-          {/* <StatisticsLogJob selectStatistic={getStatisticSelector} /> */}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>Lukk</Button>
