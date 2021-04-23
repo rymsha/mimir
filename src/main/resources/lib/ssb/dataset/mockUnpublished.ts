@@ -1,6 +1,6 @@
 import { Content, ContentLibrary, QueryResponse } from 'enonic-types/content'
 import { Statistics } from '../../../site/content-types/statistics/statistics'
-import { DataSource } from '../../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../../site/mixins/dataSource/dataSource-config'
 import { UNPUBLISHED_DATASET_BRANCH } from '../../repo/dataset'
 import { StatisticLib } from '../statistic'
 import { DatasetLib } from './dataset'

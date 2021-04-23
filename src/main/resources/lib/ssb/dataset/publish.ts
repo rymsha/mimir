@@ -1,7 +1,7 @@
 __non_webpack_require__('/lib/polyfills/nashorn')
 import { Content, ContentLibrary } from 'enonic-types/content'
 import { Statistics } from '../../../site/content-types/statistics/statistics'
-import { DataSource } from '../../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../../site/mixins/dataSource/dataSource-config'
 import { RepoDatasetLib, DatasetRepoNode } from '../../repo/dataset'
 import { StatRegStatisticsLib } from '../../repo/statreg/statistics'
 import { TaskLib } from '../../types/task'

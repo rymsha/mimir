@@ -1,7 +1,7 @@
 import { Content } from 'enonic-types/content'
 import { splitEvery } from 'ramda'
 import { DatasetLib, CreateOrUpdateStatus } from './ssb/dataset/dataset'
-import { DataSource } from '../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../site/mixins/dataSource/dataSource-config'
 import { RepoQueryLib } from './repo/query'
 import { RepoDatasetLib } from './repo/dataset'
 import { TaskLib } from './types/task'

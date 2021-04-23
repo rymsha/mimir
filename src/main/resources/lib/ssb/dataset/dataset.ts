@@ -1,5 +1,5 @@
 import { ContentLibrary, Content, QueryResponse } from 'enonic-types/content'
-import { DataSource } from '../../../site/mixins/dataSource/dataSource'
+import { DataSource } from '../../../site/mixins/dataSource/dataSource-config'
 import { DataSource as DataSourceType, DatasetRepoNode, RepoDatasetLib } from '../../repo/dataset'
 import { StatbankApiLib } from './statbankApi'
 import { JSONstat } from '../../types/jsonstat-toolkit'

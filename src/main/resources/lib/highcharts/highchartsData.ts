@@ -3,7 +3,7 @@ import { Request } from 'enonic-types/controller'
 import { Highchart } from '../../site/content-types/highchart/highchart'
 import { Content } from 'enonic-types/content'
 import { JSONstat } from '../types/jsonstat-toolkit'
-import { DataSource } from '../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../site/mixins/dataSource/dataSource-config'
 
 const {
   seriesAndCategoriesFromHtmlTable

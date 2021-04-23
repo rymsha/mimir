@@ -4,7 +4,7 @@ import { Content, ContentLibrary } from 'enonic-types/content'
 import { DatasetRepoNode } from '../repo/dataset'
 import { DatasetLib } from '../ssb/dataset/dataset'
 import { SSBCacheLibrary } from '../ssb/cache'
-import { DataSource } from '../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../site/mixins/dataSource/dataSource-config'
 const {
   getSiteConfig
 }: PortalLibrary = __non_webpack_require__( '/lib/xp/portal')

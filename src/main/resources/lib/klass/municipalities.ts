@@ -5,7 +5,7 @@ import { PortalLibrary } from 'enonic-types/portal'
 import { County, CountiesLib } from './counties'
 import { DatasetLib } from '../ssb/dataset/dataset'
 import { DatasetRepoNode } from '../repo/dataset'
-import { DataSource } from '../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../site/mixins/dataSource/dataSource-config'
 import { SSBCacheLibrary } from '../ssb/cache'
 import { CommonLibrary } from '../types/common'
 

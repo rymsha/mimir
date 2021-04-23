@@ -1,6 +1,6 @@
 import { DatasetRepoNode, RepoDatasetLib } from '../../repo/dataset'
 import { Content } from 'enonic-types/content'
-import { DataSource } from '../../../site/mixins/dataSource/dataSource'
+import { DataSource } from '../../../site/mixins/dataSource/dataSource-config'
 import { JSONstat } from '../../types/jsonstat-toolkit'
 import { RepoQueryLib } from '../../repo/query'
 import { StatbankSavedRaw } from '../../types/xmlParser'

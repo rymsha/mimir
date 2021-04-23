@@ -1,7 +1,7 @@
 __non_webpack_require__('/lib/polyfills/nashorn')
 import { DatasetLib, CreateOrUpdateStatus } from './dataset'
 import { ContentLibrary, Content } from 'enonic-types/content'
-import { DataSource } from '../../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../../site/mixins/dataSource/dataSource-config'
 import { Events, QueryInfoNode, RepoQueryLib } from '../../repo/query'
 import { EVENT_LOG_REPO, EVENT_LOG_BRANCH, LogSummary, RepoEventLogLib } from '../../repo/eventLog'
 import { NodeQueryHit, RepoNode } from 'enonic-types/node'

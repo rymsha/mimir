@@ -1,7 +1,7 @@
 import { AuthLibrary, UserQueryResult } from 'enonic-types/auth'
 import { Content } from 'enonic-types/content'
 import { ContextLibrary, RunContext } from 'enonic-types/context'
-import { DataSource } from '../../site/mixins/dataSource/dataSource'
+import { DataSourceConfig as DataSource } from '../../site/mixins/dataSource/dataSource-config'
 import { RepoJobLib, JobEventNode, JobInfoNode } from '../repo/job'
 import { StatRegRefreshResult, StatRegRepoLib } from '../repo/statreg'
 import { SSBTaskLib } from '../task'
