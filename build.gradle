@@ -1,6 +1,8 @@
 plugins {
     id 'com.moowork.node' version '1.3.1'
     id 'com.enonic.xp.app' version '2.0.0'
+    id 'java'
+    id 'no.item.xp.codegen' version '1.1.6'
 }
 
 app {
@@ -136,8 +138,17 @@ jar {
     exclude 'assets/styles/**/*.scss'
     exclude 'assets/styles/**/*.js'
 
+    // Add this before your TypeScript build task
+    dependsOn += generateTypeScript
+
+    // If you want JSDoc generated instead (because JS-project), use this:
+    // dependsOn += generateJSDoc
+
+    // If you want io-ts codecs generated instead (must be used instead of generateTypeScript):
+    // dependsOn += generateIoTs
+
     serverWebpack.dependsOn += 'react4xp_components' // 'webpack_react4xp'
-    serverWebpack.dependsOn += generateTypeScriptInterfaces
+    // serverWebpack.dependsOn += generateTypeScriptInterfaces
 
     dependsOn += npmInstall
     dependsOn += clientJsWebpack
