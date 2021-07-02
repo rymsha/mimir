@@ -4,6 +4,9 @@
         <input name="searchResultPage" type="ContentSelector">
             <label>Side for søkeresultat</label>
             <occurrences minimum="0" maximum="1" />
+            <config>
+                <allowPath>${site}</allowPath>
+            </config>
         </input>
         <input type="TextLine" name="numberOfHits">
             <label>Antall treff pr side</label>
