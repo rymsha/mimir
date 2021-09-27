@@ -62,7 +62,9 @@ function querySolr(queryParams: SolrQueryParams): SolrResult | undefined {
 function requestSolr(queryParams: SolrQueryParams): SolrResponse {
   try {
     const result: HttpResponse = request({
-      url: queryParams.query
+      url: queryParams.query,
+      connectionTimeout: 30000,
+      readTimeout: 30000
     })
 
     if (result.status !== 200) {
@@ -74,8 +76,8 @@ function requestSolr(queryParams: SolrQueryParams): SolrResponse {
       body: result.body
     }
   } catch (e) {
-    log.error(`Could not request solr with parameters: ${JSON.stringify(queryParams, null, 2)}`)
-    log.error(e)
+    log.error(`Could not request solr with parameters: ${JSON.stringify(queryParams, null, 2)}
+    ` + e )
     return {
       status: e.status ? e.status : 500,
       body: e.body ? e.body : {
