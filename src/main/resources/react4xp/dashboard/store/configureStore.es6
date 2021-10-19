@@ -20,7 +20,7 @@ export function configureAppStore(toggleDebugging) {
   // Create the store with saga middleware
   const middlewares = [sagaMiddleware]
 
-  if (toggleDebugging) {
+  if (process.env.NODE_ENV !== 'production' || !!toggleDebugging) {
     middlewares.push(logger)
   }
 
@@ -41,8 +41,7 @@ export function configureAppStore(toggleDebugging) {
     },
     // middleware: [...getDefaultMiddleware(), ...middlewares],
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middlewares),
-    // devTools: process.env.NODE_ENV !== 'production',
-    devTools: !!toggleDebugging,
+    devTools: process.env.NODE_ENV !== 'production' || !!toggleDebugging,
     enhancers
   })
 
