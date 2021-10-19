@@ -41,7 +41,8 @@ export function configureAppStore(toggleDebugging) {
     },
     // middleware: [...getDefaultMiddleware(), ...middlewares],
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middlewares),
-    devTools: process.env.NODE_ENV !== 'production',
+    // devTools: process.env.NODE_ENV !== 'production',
+    devTools: !!toggleDebugging,
     enhancers
   })
 
