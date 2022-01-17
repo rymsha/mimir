@@ -5,7 +5,7 @@ export interface React4xp {
     render: (
         entry: string,
         props?: object,
-        request?: Request | MacroContext,
+        request?: Request | MacroContext | object | null,
         options?: object
         ) => React4xpResponse;
 }

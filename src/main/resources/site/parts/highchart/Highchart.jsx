@@ -155,7 +155,7 @@ function Highchart(props) {
           activeOnInit="highcharts-figure/"
           items={[
             {
-              title: props.phrases['highcharts.showAsGraph'],
+              title: props.phrases['highcharts.showAsChart'],
               path: 'highcharts-figure/'
             },
             {
