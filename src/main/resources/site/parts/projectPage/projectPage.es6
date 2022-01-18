@@ -227,8 +227,7 @@ function renderPart(req) {
   const projectPageProps = {
     projectPageTitle: page.displayName,
     projectDescription: projectPageMock.academic_summary.no,
-    projectLeaderName: `${projectPageMock.participants[0].first_name} ${projectPageMock.participants[0].surname}`,
-    projectLeaderHref: projectPageMock.participants[0].url
+    projectParticipantsList: projectPageMock.participants
   }
 
   return React4xp.render('site/parts/projectPage/ProjectPage', projectPageProps, req)

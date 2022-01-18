@@ -1,32 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { Title, LeadParagraph, Divider, Link } from '@statisticsnorway/ssb-component-library'
 import { User } from 'react-feather'
 
 function ProjectPage(props) {
   function renderProjectInformation() {
-    const placeholderList = [1, 2, 3]
+    const projectLeader = props.projectParticipantsList.find((p) => p.roles[0].role_code === 'PRO_MANAGER')
+
     return (
       <Row>
-        {placeholderList.map((item, index) =>
-          <Col key={index} className="col-lg-4">
-            <Divider light={true} />
-            <Row className="pt-4">
-              <Col className="col-2">
-                <User size={30} />
-              </Col>
-              <Col className="flex-column">
-                <LeadParagraph>Prosjektleder</LeadParagraph>
-                <div>
-                  <Link href={props.projectLeaderHref} linkType="profiled">
-                    {props.projectLeaderName}, SSB
-                  </Link>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-        )}
+        <Col className="col-lg-4">
+          <Divider light={true} />
+          <Row className="pt-4">
+            <Col className="col-2">
+              <User size={30} />
+            </Col>
+            <Col className="flex-column">
+              <LeadParagraph>Prosjektleder</LeadParagraph>
+              <div>
+                <Link href={projectLeader.url} linkType="profiled">
+                  {`${projectLeader.first_name} ${projectLeader.surname}`}, SSB
+                </Link>
+              </div>
+            </Col>
+          </Row>
+        </Col>
         <Divider className="mt-5" light={true} />
       </Row>
     )
@@ -49,11 +48,11 @@ function ProjectPage(props) {
   }
 
   return (
-    <section className="xp-part part-project-page container">
+    <Container fluid>
       <Row>
         <Col className="col-12">
           <Row className="mb-5">
-            <Title size={1}>{props.projectPageTitle}</Title>
+            <Title size={1} className="mb-3">{props.projectPageTitle}</Title>
           </Row>
           {renderProjectInformation()}
         </Col>
@@ -63,15 +62,14 @@ function ProjectPage(props) {
           {renderAboutProject()}
         </Col>
       </Row>
-    </section>
+    </Container>
   )
 }
 
 ProjectPage.propTypes = {
   projectPageTitle: PropTypes.string,
   projectDescription: PropTypes.string,
-  projectLeaderName: PropTypes.string,
-  projectLeaderHref: PropTypes.string
+  projectParticipantsList: PropTypes.array
 }
 
 export default (props) => <ProjectPage {...props} />
