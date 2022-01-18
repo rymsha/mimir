@@ -17,7 +17,7 @@ exports.get = function(req) {
 exports.preview = (req) => renderPart(req)
 
 function renderPart(req) {
-  const projectPageMock = {
+  const projectPageData = {
     'cristin_project_id': '360372',
     'publishable': true,
     'published': true,
@@ -224,10 +224,18 @@ function renderPart(req) {
 
   const page = getContent()
 
+  const startYear = new Date(projectPageData.start_date).getFullYear()
+  const endYear = new Date(projectPageData.end_date).getFullYear()
+  const projectPageGeneralInformation = {
+    projectPeriod: `${startYear} - ${endYear}`,
+    projectInstitution: projectPageData.coordinating_institution.institution.institution_name.en,
+    projectLeader: projectPageData.participants.find((p) => p.roles[0].role_code === 'PRO_MANAGER')
+  }
+
   const projectPageProps = {
     projectPageTitle: page.displayName,
-    projectDescription: projectPageMock.academic_summary.no,
-    projectParticipantsList: projectPageMock.participants
+    projectDescription: projectPageData.academic_summary.no,
+    projectPageGeneralInformation
   }
 
   return React4xp.render('site/parts/projectPage/ProjectPage', projectPageProps, req)

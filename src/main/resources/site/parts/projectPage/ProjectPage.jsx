@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Container, Row, Col } from 'react-bootstrap'
 import { Title, LeadParagraph, Divider, Link } from '@statisticsnorway/ssb-component-library'
-import { User } from 'react-feather'
+import { User, Calendar, Settings } from 'react-feather'
 
 function ProjectPage(props) {
   function renderProjectInformation() {
-    const projectLeader = props.projectParticipantsList.find((p) => p.roles[0].role_code === 'PRO_MANAGER')
+    const generalInformation = props.projectPageGeneralInformation
 
     return (
       <Row>
@@ -14,15 +14,47 @@ function ProjectPage(props) {
           <Divider light={true} />
           <Row className="pt-4">
             <Col className="col-2">
-              <User size={30} />
+              <User size={38} />
             </Col>
             <Col className="flex-column">
               <LeadParagraph>Prosjektleder</LeadParagraph>
               <div>
-                <Link href={projectLeader.url} linkType="profiled">
-                  {`${projectLeader.first_name} ${projectLeader.surname}`}, SSB
+                <Link href={generalInformation.projectLeader.url} linkType="profiled">
+                  {`${generalInformation.projectLeader.first_name} ${generalInformation.projectLeader.surname}`}, SSB
                 </Link>
               </div>
+            </Col>
+          </Row>
+        </Col>
+        <Col className="col-lg-4">
+          <Divider light={true} />
+          <Row className="pt-4">
+            <Col className="col-2">
+              <Calendar size={38} />
+            </Col>
+            <Col className="flex-column">
+              <LeadParagraph>Prosjektperiode</LeadParagraph>
+              <b style={{
+                fontSize: '20px'
+              }}>
+                {generalInformation.projectPeriod}
+              </b>
+            </Col>
+          </Row>
+        </Col>
+        <Col className="col-lg-4">
+          <Divider light={true} />
+          <Row className="pt-4">
+            <Col className="col-2">
+              <Settings size={32} />
+            </Col>
+            <Col className="flex-column">
+              <LeadParagraph>Oppdragsgiver</LeadParagraph>
+              <b style={{
+                fontSize: '20px'
+              }}>
+                {generalInformation.projectInstitution}
+              </b>
             </Col>
           </Row>
         </Col>
@@ -34,8 +66,7 @@ function ProjectPage(props) {
   function renderAboutProject() {
     return (
       <Row>
-        <Col className="col-12">
-          {/* TODO: Language */}
+        <Col className="col-12 mb-3">
           <Title size={2}>Om prosjektet</Title>
         </Col>
         <Col className="col-12">
@@ -52,7 +83,7 @@ function ProjectPage(props) {
       <Row>
         <Col className="col-12">
           <Row className="mb-5">
-            <Title size={1} className="mb-3">{props.projectPageTitle}</Title>
+            <Title size={1}>{props.projectPageTitle}</Title>
           </Row>
           {renderProjectInformation()}
         </Col>
@@ -69,7 +100,7 @@ function ProjectPage(props) {
 ProjectPage.propTypes = {
   projectPageTitle: PropTypes.string,
   projectDescription: PropTypes.string,
-  projectParticipantsList: PropTypes.array
+  projectPageGeneralInformation: PropTypes.array
 }
 
 export default (props) => <ProjectPage {...props} />
