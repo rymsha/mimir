@@ -124,14 +124,11 @@ function renderPart(req: Request, highchartIds: Array<string>): Response | React
     GA_TRACKING_ID: GA_TRACKING_ID
   }
 
-  log.info('request mode %s', JSON.stringify(req.mode, null, 2))
   const overrideRequest: Request | object = req.mode === 'inline' || req.mode === 'edit' ?
     {
       ...req,
       mode: 'live'
     } : req
-  // const overrideRequest: Request | null = req.mode === 'inline' || req.mode === 'edit' ? null : req
-  log.info('request %s', JSON.stringify(overrideRequest, null, 2))
 
   if (isEnabled('highchart-react', true, 'ssb')) {
     return React4xp.render('site/parts/highchart/Highchart', HighchartProps, overrideRequest, {

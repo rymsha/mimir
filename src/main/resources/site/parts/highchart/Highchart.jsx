@@ -312,6 +312,7 @@ function Highchart(props) {
     }
   }
 
+  console.log('test')
   return (
     <Container>
       {renderHighcharts()}
