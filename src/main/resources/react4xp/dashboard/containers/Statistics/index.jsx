@@ -8,7 +8,7 @@ import { RefreshCw } from 'react-feather'
 import Moment from 'react-moment'
 import { Link } from '@statisticsnorway/ssb-component-library'
 import { selectContentStudioBaseUrl, selectInternalBaseUrl } from '../HomePage/selectors'
-import { setOpenStatistic, setOpenModal } from './actions'
+import { setOpenStatistic, setOpenModal, requestStatistics } from './actions'
 import { StatisticsLog } from './StatisticsLog'
 import { RefreshStatisticsModal } from '../../components/RefreshStatisticsModal'
 import { WebSocketContext } from '../../utils/websocket/WebsocketProvider'
@@ -22,9 +22,8 @@ export function Statistics() {
 
   const dispatch = useDispatch()
   const io = useContext(WebSocketContext)
-  const activeStatistics = statistics ? statistics.filter((s) => s.status === 'A') : []
-  const statisticsNo = activeStatistics.filter((s) => s.language === 'nb' || s.language === 'nn')
-  const statisticsEn = activeStatistics.filter((s) => s.language === 'en')
+  const statisticsNo = statistics.filter((s) => s.language === 'nb' || s.language === 'nn')
+  const statisticsEn = statistics.filter((s) => s.language === 'en')
 
   const statisticsFinal = []
   if (statisticsNo.length > 0) {
@@ -70,6 +69,19 @@ export function Statistics() {
           </thead>
           {getStatistics()}
         </Table>
+        <Button
+          primary
+          onClick={() => {
+            requestStatistics(dispatch, io, {
+              statistics: statisticsFinal,
+              start: statistics.length ? statistics.length : 0,
+              count: 15
+            })
+          }}
+          disabled={false}
+        >
+          Vis flere
+        </Button>
         {openModal ? <RefreshStatisticsModal/> : null }
       </div>
     )

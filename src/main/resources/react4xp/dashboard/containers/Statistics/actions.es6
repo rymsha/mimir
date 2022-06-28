@@ -1,11 +1,12 @@
 import { actions } from './slice'
 
-export function requestStatistics(dispatch, io) {
+export function requestStatistics(dispatch, io, options) {
   dispatch({
-    type: actions.loadStatistics.type
+    type: actions.loadStatistics.type,
+    options
   })
 
-  io.emit('get-statistics')
+  io.emit('get-statistics', options)
 }
 
 export function requestStatisticsSearchList(dispatch, io) {

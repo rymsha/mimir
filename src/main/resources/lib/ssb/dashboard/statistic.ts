@@ -76,7 +76,7 @@ const {
 } = __non_webpack_require__('/lib/xp/auth')
 
 export function setupHandlers(socket: Socket, socketEmitter: SocketEmitter): void {
-  socket.on('get-statistics', () => {
+  socket.on('get-statistics', (options: {statistics: Array<StatisticDashboard>, start: number, count: number}) => {
     executeFunction({
       description: 'get-statistics',
       func: () => {
@@ -89,7 +89,7 @@ export function setupHandlers(socket: Socket, socketEmitter: SocketEmitter): voi
             idProvider: users[parseInt(socket.id)].idProvider ? users[parseInt(socket.id)].idProvider : 'system'
           }
         }
-        const statisticData: Array<StatisticDashboard> = run(context, () => getStatistics())
+        const statisticData: Array<StatisticDashboard> = run(context, () => getStatistics(options.statistics, options.start, options.count))
         socket.emit('statistics-result', statisticData)
       }
     })
@@ -421,33 +421,49 @@ function checkIfUserIsAdmin(): boolean {
   return hasRole('system.admin')
 }
 
-const TWO_WEEKS: number = 14 // TODO: put in config?
-function getStatistics(): Array<StatisticDashboard> {
+const ONE_MONTH: number = 30 // TODO: put in config?
+function getStatistics(statistics: Array<StatisticDashboard>, start: number, count: number): Array<StatisticDashboard> {
   const userIsAdmin: boolean = checkIfUserIsAdmin()
-  const statistic: Array<StatisticDashboard> = userIsAdmin ? getAdminStatistics() : getUserStatistics()
+  const statistic: Array<StatisticDashboard> = userIsAdmin ? getAdminStatistics(statistics, start, count) : getUserStatistics(statistics, start, count)
   return statistic.sort((a, b) => {
     return new Date(a.nextRelease || '01.01.3000').getTime() - new Date(b.nextRelease || '01.01.3000').getTime()
   })
 }
 
-function getAdminStatistics(): Array<StatisticDashboard> {
+function getAdminStatistics(statistics: Array<StatisticDashboard>, start: number, count: number): Array<StatisticDashboard> {
   const statsBeforeDate: Date = new Date()
-  statsBeforeDate.setDate(statsBeforeDate.getDate() + TWO_WEEKS)
+  statsBeforeDate.setDate(statsBeforeDate.getDate() + ONE_MONTH)
   const statregStatistics: Array<StatisticInListing> = fetchStatisticsWithRelease(statsBeforeDate)
-  const statisticsContent: Array<Content<Statistics>> = query({
-    query: `data.statistic IN(${statregStatistics.map((s) => `"${s.id}"`).join(',')})`,
-    count: 1000
+  const filteredStatregStatistics: Array<StatisticInListing> = statregStatistics.filter((s) => s.status === 'A')
+  const statisticsContentNO: Array<Content<Statistics>> = query({
+    start,
+    query: `data.statistic IN(${filteredStatregStatistics.map((s) => `"${s.id}"`).join(',')}) AND (language = 'nb' OR language = 'nn')`,
+    count
   }).hits as unknown as Array<Content<Statistics>>
-  return statisticsContent.map( (statisticContent) => prepDashboardStatistics(statisticContent, statregStatistics))
+  const statisticsContentEN: Array<Content<Statistics>> = query({
+    start,
+    query: `data.statistic IN(${filteredStatregStatistics.map((s) => `"${s.id}"`).join(',')}) AND language = 'en'`,
+    count
+  }).hits as unknown as Array<Content<Statistics>>
+  const mergedStatisticsContent: Array<Content<Statistics>> = statisticsContentNO.concat(statisticsContentEN)
+  return statistics.concat(mergedStatisticsContent.map((statisticContent) => prepDashboardStatistics(statisticContent, statregStatistics)))
 }
 
-function getUserStatistics(): Array<StatisticDashboard> {
-  const userStatisticsResult: QueryResponse<Statistics> = query({
-    query: `data.statistic LIKE '*'`,
+function getUserStatistics(statistics: Array<StatisticDashboard>, start: number, count: number): Array<StatisticDashboard> {
+  const userStatisticsResultNO: Array<Content<Statistics>> = query({
+    start,
+    query: `data.statistic LIKE '*' AND (language = 'nb' OR language = 'nn')`,
     contentTypes: [`${app.name}:statistics`],
-    count: 1000
-  })
-  const userStatisticContent: Array<Content<Statistics & Statistic>> = userStatisticsResult.hits.filter(
+    count
+  }).hits as unknown as Array<Content<Statistics>>
+  const userStatisticsResultEN: Array<Content<Statistics>> = query({
+    start,
+    query: `data.statistic LIKE '*' AND (language = 'en')`,
+    contentTypes: [`${app.name}:statistics`],
+    count
+  }).hits as unknown as Array<Content<Statistics>>
+  const mergedUserStatisticsResult: Array<Content<Statistics>> = userStatisticsResultNO.concat(userStatisticsResultEN)
+  const userStatisticContent: Array<Content<Statistics & Statistic>> = mergedUserStatisticsResult.filter(
     (statistic: Content<Statistics>) => hasWritePermissions(statistic._id))
   const userStatistic: Array<StatisticInListing> = userStatisticContent.reduce((acc: Array<StatisticInListing>, statistic) => {
     if (statistic.data.statistic) {
@@ -456,7 +472,7 @@ function getUserStatistics(): Array<StatisticDashboard> {
     }
     return acc
   }, [])
-  return userStatisticContent.map( (statisticContent) => prepDashboardStatistics(statisticContent, userStatistic))
+  return statistics.concat(userStatisticContent.map( (statisticContent) => prepDashboardStatistics(statisticContent, userStatistic)))
 }
 
 function prepDashboardStatistics(statisticContent: Content<Statistics & Statistic>, statregStatistics: Array<StatisticInListing>): StatisticDashboard {
@@ -601,7 +617,7 @@ interface OwnerObject {
   ownerId: string;
   tbmlId: string;
   fetchPublished: true | undefined;
-};
+}
 
 interface StatisticDashboard {
   id: string;

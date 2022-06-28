@@ -85,7 +85,13 @@ function DashboardRouter(props) {
     internalStatbankUrl: props.internalStatbankUrl
   })
   setUserServerSide(dispatch, io, props.user)
-  if (props.dashboardOptionsForUser.statistics) requestStatistics(dispatch, io)
+  if (props.dashboardOptionsForUser.statistics) {
+    requestStatistics(dispatch, io, {
+      statistics: [],
+      start: 0,
+      count: 15
+    })
+  }
   if (props.dashboardOptionsForUser.dashboardTools) requestStatisticsSearchList(dispatch, io)
   if (props.dashboardOptionsForUser.statisticRegister) requestStatuses(dispatch, io)
   if (props.dashboardOptionsForUser.jobLogs) requestJobs(dispatch, io)
