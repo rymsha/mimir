@@ -75,12 +75,12 @@ export function Statistics() {
             requestStatistics(dispatch, io, {
               statistics: statisticsFinal,
               start: statistics.length ? statistics.length : 0,
-              count: 15
+              count: 10
             })
           }}
           disabled={false}
         >
-          Vis flere
+          {!loading ? 'Vis flere' : <span className="spinner-border spinner-border-sm" /> }
         </Button>
         {openModal ? <RefreshStatisticsModal/> : null }
       </div>
@@ -88,17 +88,20 @@ export function Statistics() {
   }
 
   function makeRefreshButton(statistic) {
-    return (
-      <Button
-        variant="primary"
-        size="sm"
-        className="mx-1"
-        onClick={() => onRefreshStatistic(statistic)}
-        disabled={statistic.loading}
-      >
-        { statistic.loading ? <span className="spinner-border spinner-border-sm" /> : <RefreshCw size={16}/> }
-      </Button>
-    )
+    if (statistic && statistic.id) {
+      return (
+        <Button
+          variant="primary"
+          size="sm"
+          className="mx-1"
+          onClick={() => onRefreshStatistic(statistic)}
+          disabled={statistic.loading}
+        >
+          { statistic.loading ? <span className="spinner-border spinner-border-sm" /> : <RefreshCw size={16}/> }
+        </Button>
+      )
+    }
+    return
   }
 
   function onRefreshStatistic(statistic) {

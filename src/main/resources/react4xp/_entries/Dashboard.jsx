@@ -89,7 +89,7 @@ function DashboardRouter(props) {
     requestStatistics(dispatch, io, {
       statistics: [],
       start: 0,
-      count: 15
+      count: 10
     })
   }
   if (props.dashboardOptionsForUser.dashboardTools) requestStatisticsSearchList(dispatch, io)
