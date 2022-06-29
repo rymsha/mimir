@@ -74,7 +74,7 @@ export function Statistics() {
           onClick={() => {
             requestStatistics(dispatch, io, {
               statistics: statisticsFinal,
-              start: statistics.length ? statistics.length : 0,
+              start: statisticsNo.length ? statisticsNo.length : 0,
               count: 10
             })
           }}

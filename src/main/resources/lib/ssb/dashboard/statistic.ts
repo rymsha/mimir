@@ -435,17 +435,17 @@ function getAdminStatistics(statistics: Array<StatisticDashboard>, start: number
   statsBeforeDate.setDate(statsBeforeDate.getDate() + ONE_MONTH)
   const statregStatistics: Array<StatisticInListing> = fetchStatisticsWithRelease(statsBeforeDate)
   const filteredStatregStatistics: Array<StatisticInListing> = statregStatistics.filter((s) => s.status === 'A')
-  const statisticsContentNO: Array<Content<Statistics>> = query({
+  const statisticsContentNO: QueryResponse<Statistics> = query({
     start,
     query: `data.statistic IN(${filteredStatregStatistics.map((s) => `"${s.id}"`).join(',')}) AND (language = 'nb' OR language = 'nn')`,
     count
-  }).hits as unknown as Array<Content<Statistics>>
-  const statisticsContentEN: Array<Content<Statistics>> = query({
+  })
+  const statisticsContentEN: QueryResponse<Statistics> = query({
     start,
     query: `data.statistic IN(${filteredStatregStatistics.map((s) => `"${s.id}"`).join(',')}) AND language = 'en'`,
     count
-  }).hits as unknown as Array<Content<Statistics>>
-  const mergedStatisticsContent: Array<Content<Statistics>> = statisticsContentNO.concat(statisticsContentEN)
+  })
+  const mergedStatisticsContent: Array<Content<Statistics>> = statisticsContentNO.hits.concat(statisticsContentEN.hits)
   return statistics.concat(mergedStatisticsContent.map((statisticContent) => prepDashboardStatistics(statisticContent, statregStatistics)))
 }
 
@@ -472,7 +472,7 @@ function getUserStatistics(statistics: Array<StatisticDashboard>, start: number,
     }
     return acc
   }, [])
-  return statistics.concat(userStatisticContent.map( (statisticContent) => prepDashboardStatistics(statisticContent, userStatistic)))
+  return statistics.concat(userStatisticContent.map((statisticContent) => prepDashboardStatistics(statisticContent, userStatistic)))
 }
 
 function prepDashboardStatistics(statisticContent: Content<Statistics & Statistic>, statregStatistics: Array<StatisticInListing>): StatisticDashboard {
