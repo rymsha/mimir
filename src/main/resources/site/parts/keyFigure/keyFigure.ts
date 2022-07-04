@@ -1,5 +1,6 @@
 import { Content } from 'enonic-types/content'
 import { Request, Response } from 'enonic-types/controller'
+import { fromMasterPartCache } from '../../../lib/ssb/cache/partCache'
 import { MunicipalityWithCounty } from '../../../lib/ssb/dataset/klass/municipalities'
 import { KeyFigureView } from '../../../lib/ssb/parts/keyFigure'
 import { React4xp, React4xpResponse } from '../../../lib/types/react4xp'
@@ -44,7 +45,13 @@ exports.get = function(req: Request): React4xpResponse | Response {
     const config: KeyFigurePartConfig = getComponent().config
     const keyFigureIds: Array<string> | [] = config.figure ? forceArray(config.figure) : []
     const municipality: MunicipalityWithCounty | undefined = getMunicipality(req)
-    return renderPart(req, municipality, keyFigureIds)
+
+    const page: Content = getContent()
+    if (req.mode !== 'edit') {
+      return fromMasterPartCache(`${page._id}-keyFigure`, () => renderPart(req, municipality, keyFigureIds))
+    } else {
+      return renderPart(req, municipality, keyFigureIds)
+    }
   } catch (e) {
     return renderError(req, 'Error in part', e)
   }
