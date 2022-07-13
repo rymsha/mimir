@@ -45,13 +45,7 @@ exports.get = function(req: Request): React4xpResponse | Response {
     const config: KeyFigurePartConfig = getComponent().config
     const keyFigureIds: Array<string> | [] = config.figure ? forceArray(config.figure) : []
     const municipality: MunicipalityWithCounty | undefined = getMunicipality(req)
-
-    const page: Content = getContent()
-    if (req.mode !== 'edit') {
-      return fromMasterPartCache(`${page._id}-keyFigure`, () => renderPart(req, municipality, keyFigureIds))
-    } else {
-      return renderPart(req, municipality, keyFigureIds)
-    }
+    return renderPart(req, municipality, keyFigureIds)
   } catch (e) {
     return renderError(req, 'Error in part', e)
   }
@@ -76,30 +70,27 @@ function renderPart(req: Request, municipality: MunicipalityWithCounty | undefin
   const showPreviewDraft: boolean = hasWritePermissionsAndPreview(req, page._id)
 
   // get all keyFigures and filter out non-existing keyFigures
-  const keyFigures: Array<KeyFigureData> = getKeyFigures(keyFigureIds)
+  const keyFigures: Array<KeyFigureData> = fetchKeyFigures(municipality, keyFigureIds, DATASET_BRANCH) as Array<KeyFigureData>
+  const keyFiguresDraft: Array<KeyFigureData> | null = showPreviewDraft ? fetchKeyFigures(municipality, keyFigureIds, UNPUBLISHED_DATASET_BRANCH) : null
+
+  // if (req.mode === 'edit' || req.mode === 'inline') {
+  //   return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+  // } else {
+  //   return fromMasterPartCache(`${page._id}-keyFigure`, () => renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req))
+  // }
+  return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+}
+
+function fetchKeyFigures(municipality: MunicipalityWithCounty | undefined, keyFigureIds: Array<string>, branch: string): Array<KeyFigureData> | null {
+  return getKeyFigures(keyFigureIds)
     .map((keyFigure) => {
-      const keyFigureData: KeyFigureView = parseKeyFigure(keyFigure, municipality, DATASET_BRANCH)
+      const keyFigureData: KeyFigureView = parseKeyFigure(keyFigure, municipality, branch)
       return {
         id: keyFigure._id,
         ...keyFigureData,
         source: keyFigure.data.source
       }
     }) as Array<KeyFigureData>
-
-  let keyFiguresDraft: Array<KeyFigureData> | null = null
-  if (showPreviewDraft) {
-    keyFiguresDraft = getKeyFigures(keyFigureIds)
-      .map((keyFigure) => {
-        const keyFigureData: KeyFigureView = parseKeyFigure(keyFigure, municipality, UNPUBLISHED_DATASET_BRANCH)
-        return {
-          id: keyFigure._id,
-          ...keyFigureData,
-          source: keyFigure.data.source
-        }
-      }) as Array<KeyFigureData>
-  }
-
-  return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
 }
 
 function renderKeyFigure(
