@@ -1,6 +1,6 @@
 import { Content } from 'enonic-types/content'
 import { Request, Response } from 'enonic-types/controller'
-import { fromMasterPartCache } from '../../../lib/ssb/cache/partCache'
+import { fromPartCache } from '../../../lib/ssb/cache/partCache'
 import { MunicipalityWithCounty } from '../../../lib/ssb/dataset/klass/municipalities'
 import { KeyFigureView } from '../../../lib/ssb/parts/keyFigure'
 import { React4xp, React4xpResponse } from '../../../lib/types/react4xp'
@@ -76,10 +76,9 @@ function renderPart(req: Request, municipality: MunicipalityWithCounty | undefin
   if (req.mode === 'edit' || req.mode === 'inline' || showPreviewDraft) {
     return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
   } else {
-    return fromMasterPartCache(
-      `${page._id}-${keyFigureIds.map((id) => id).join('-')}-keyFigure`,
-      () => renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
-    )
+    return fromPartCache(req, `${page._id}-${keyFigureIds.map((id) => id).join('-')}-keyFigure`, () => {
+      return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+    })
   }
 }
 

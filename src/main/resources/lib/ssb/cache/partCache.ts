@@ -27,14 +27,6 @@ export function fromPartCache<T>(req: Request, key: string, fallback: () => T): 
   })
 }
 
-// For parts with published and unpublished data toggle
-export function fromMasterPartCache<T>(key: string, fallback: () => T): T {
-  return masterPartCache.get(key, () => {
-    cacheLog(`added ${key} to part cache (master)`)
-    return fallback()
-  })
-}
-
 export function clearPartCache(content: Content, branch: string): void {
   const partCache: Cache = branch === 'master' ? masterPartCache : draftPartCache
   if (content.type === `${app.name}:page` || content.type === `portal:site` || content.type === `${app.name}:statistics`) {
@@ -71,7 +63,6 @@ export function clearPartFromPartCache(part: string): void {
 
 export interface SSBPartCacheLibrary {
   fromPartCache: <T>(req: Request, key: string, fallback: () => T) => T;
-  fromMasterPartCache: <T>(key: string, fallback: () => T) => T;
   clearPartCache: (content: Content, branch: string) => void;
   completelyClearPartCache: (branch: string) => void;
   clearPartFromPartCache: (part: string) => void;
