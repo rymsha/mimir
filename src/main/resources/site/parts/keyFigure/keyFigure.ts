@@ -70,18 +70,25 @@ function renderPart(req: Request, municipality: MunicipalityWithCounty | undefin
   const showPreviewDraft: boolean = hasWritePermissionsAndPreview(req, page._id)
 
   // get all keyFigures and filter out non-existing keyFigures
-  const keyFigures: Array<KeyFigureData> = fetchKeyFigures(municipality, keyFigureIds, DATASET_BRANCH) as Array<KeyFigureData>
-  const keyFiguresDraft: Array<KeyFigureData> | null = showPreviewDraft ? fetchKeyFigures(municipality, keyFigureIds, UNPUBLISHED_DATASET_BRANCH) : null
+  const keyFigures: Array<KeyFigureData> = fetchKeyFigures(req, municipality, keyFigureIds, DATASET_BRANCH) as Array<KeyFigureData>
+  const keyFiguresDraft: Array<KeyFigureData> | null = showPreviewDraft ? fetchKeyFigures(req, municipality, keyFigureIds, UNPUBLISHED_DATASET_BRANCH) : null
 
-  // if (req.mode === 'edit' || req.mode === 'inline') {
-  //   return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
-  // } else {
-  //   return fromMasterPartCache(`${page._id}-keyFigure`, () => renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req))
-  // }
-  return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+  if (req.mode === 'edit' || req.mode === 'inline' || showPreviewDraft) {
+    return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+  } else {
+    return fromMasterPartCache(
+      `${page._id}-${keyFigureIds.map((id) => id).join('-')}-keyFigure`,
+      () => renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
+    )
+  }
 }
 
-function fetchKeyFigures(municipality: MunicipalityWithCounty | undefined, keyFigureIds: Array<string>, branch: string): Array<KeyFigureData> | null {
+function fetchKeyFigures(
+  req: Request,
+  municipality: MunicipalityWithCounty | undefined,
+  keyFigureIds: Array<string>,
+  branch: string
+): Array<KeyFigureData> | null {
   return getKeyFigures(keyFigureIds)
     .map((keyFigure) => {
       const keyFigureData: KeyFigureView = parseKeyFigure(keyFigure, municipality, branch)
@@ -90,7 +97,7 @@ function fetchKeyFigures(municipality: MunicipalityWithCounty | undefined, keyFi
         ...keyFigureData,
         source: keyFigure.data.source
       }
-    }) as Array<KeyFigureData>
+    })
 }
 
 function renderKeyFigure(
