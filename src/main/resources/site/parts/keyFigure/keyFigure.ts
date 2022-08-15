@@ -76,7 +76,7 @@ function renderPart(req: Request, municipality: MunicipalityWithCounty | undefin
   if (req.mode === 'edit' || req.mode === 'inline' || showPreviewDraft) {
     return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
   } else {
-    return fromPartCache(req, `${page._id}-${keyFigureIds.map((id) => id).join('-')}-keyFigure`, () => {
+    return fromPartCache(req, `${page._id}-(${keyFigureIds.map((id) => id).join(', ')})-keyFigures`, () => {
       return renderKeyFigure(page, config, keyFigures, keyFiguresDraft, showPreviewDraft, req)
     })
   }
