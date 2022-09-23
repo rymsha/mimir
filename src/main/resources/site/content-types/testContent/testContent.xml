@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content-type>
+    <display-name>Testinnhold</display-name>
+    <super-type>base:structured</super-type>
+    <description>Testinnholdstype</description>
+    <form>
+        <input name="testcustom" type="CustomSelector">
+            <occurrences minimum="0" maximum="0" />
+            <label>Test customselector</label>
+            <config>
+                <service>testCustomselector</service>
+            </config>
+        </input>
+    </form>
+</content-type>
