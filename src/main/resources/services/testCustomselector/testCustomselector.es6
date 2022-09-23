@@ -1,4 +1,5 @@
-exports.get = function() {
+exports.get = (req) => {
+    log.info('Request: ' + JSON.stringify(req,null,4))
     return {
         contentType: 'application/json',
         body: {
@@ -12,5 +13,5 @@ exports.get = function() {
             count: 5,
             total: 5
         }
-    };
-};
+    }
+}
